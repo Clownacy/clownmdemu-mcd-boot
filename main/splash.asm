@@ -268,15 +268,15 @@ VBlank_Splash:
 SplashPalette:
 	dc.b	0, (.DataEnd-.Data)/2-1
 .Data:
-	incbin	"splash/palette.bin"
+	incbin	"main/splash/palette.bin"
 .DataEnd:
 
 SplashLogoGraphics:
-	incbin	"splash/tiles.nem"
+	incbin	"main/splash/tiles.nem"
 	even
 
 SplashLogoTilemap:
-	incbin	"splash/map.eni"
+	incbin	"main/splash/map.eni"
 	even
 
 ; ----------------------------------------------------------------------
