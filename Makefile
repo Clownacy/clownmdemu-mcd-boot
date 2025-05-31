@@ -12,8 +12,11 @@ out/clownassembler/clownassembler:
 	cmake -B out/clownassembler bin/clownassembler -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
 	cmake --build out/clownassembler --config Release --target clownassembler
 
-bin/clownlzss/clownlzss:
-	$(MAKE) -C bin/clownlzss clownlzss
+out/clownlzss/clownlzss-tool:
+	@mkdir -p out
+	@mkdir -p out/clownlzss
+	cmake -B out/clownlzss bin/clownlzss -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
+	cmake --build out/clownlzss --config Release --target clownlzss-tool
 
 out/clownnemesis/clownnemesis-tool:
 	@mkdir -p out
@@ -35,8 +38,8 @@ src/splash/tiles.bin src/splash/map.bin:
 src/splash/tiles.nem: src/splash/tiles.bin out/clownnemesis/clownnemesis-tool
 	out/clownnemesis/clownnemesis-tool -c $< $@
 
-src/splash/map.eni: src/splash/map.bin bin/clownlzss/clownlzss
-	bin/clownlzss/clownlzss -e $< $@
+src/splash/map.eni: src/splash/map.bin out/clownlzss/clownlzss-tool
+	out/clownlzss/clownlzss-tool -e $< $@
 
 out/bios.bin: src/main/core.asm out/sub_bios.kos out/clownassembler/clownassembler src/splash/tiles.nem src/splash/map.eni
 	@mkdir -p out
