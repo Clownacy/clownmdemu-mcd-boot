@@ -7,7 +7,7 @@ out/accurate-kosinski/kosinski-compress:
 	cmake --build out/accurate-kosinski --config Release --target kosinski-compress
 
 bin/clownassembler/clownassembler:
-	$(MAKE) -C bin/clownassembler clownassembler
+	$(MAKE) -C bin/clownassembler clownassembler RELEASE=1
 
 bin/clownlzss/clownlzss:
 	$(MAKE) -C bin/clownlzss clownlzss
