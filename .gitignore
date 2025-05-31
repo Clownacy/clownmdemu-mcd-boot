@@ -1,4 +1,1 @@
-bin/
-build/
-disasm/
-make.bat
+out/

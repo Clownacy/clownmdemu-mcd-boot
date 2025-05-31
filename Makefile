@@ -1,40 +1,40 @@
-all: build/bios.bin
+all: out/bios.bin
 
-build/accurate-kosinski/kosinski-compress:
-	@mkdir -p build
-	@mkdir -p build/accurate-kosinski
-	cmake -B build/accurate-kosinski tools/accurate-kosinski -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
-	cmake --build build/accurate-kosinski --config Release --target kosinski-compress
+out/accurate-kosinski/kosinski-compress:
+	@mkdir -p out
+	@mkdir -p out/accurate-kosinski
+	cmake -B out/accurate-kosinski bin/accurate-kosinski -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
+	cmake --build out/accurate-kosinski --config Release --target kosinski-compress
 
-tools/clownassembler/clownassembler:
-	$(MAKE) -C tools/clownassembler clownassembler
+bin/clownassembler/clownassembler:
+	$(MAKE) -C bin/clownassembler clownassembler
 
-tools/clownlzss/clownlzss:
-	$(MAKE) -C tools/clownlzss clownlzss
+bin/clownlzss/clownlzss:
+	$(MAKE) -C bin/clownlzss clownlzss
 
-build/clownnemesis/clownnemesis-tool:
-	@mkdir -p build
-	@mkdir -p build/clownnemesis
-	cmake -B build/clownnemesis tools/clownnemesis -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
-	cmake --build build/clownnemesis --config Release --target clownnemesis-tool
+out/clownnemesis/clownnemesis-tool:
+	@mkdir -p out
+	@mkdir -p out/clownnemesis
+	cmake -B out/clownnemesis bin/clownnemesis -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=.
+	cmake --build out/clownnemesis --config Release --target clownnemesis-tool
 
-build/subbios.bin: sub/core.asm tools/clownassembler/clownassembler
-	@mkdir -p build
-	tools/clownassembler/clownassembler -i $< -o $@
+out/sub_bios.bin: src/sub/core.asm bin/clownassembler/clownassembler
+	@mkdir -p out
+	bin/clownassembler/clownassembler -i $< -o $@
 
-build/subbios.kos: build/subbios.bin build/accurate-kosinski/kosinski-compress
-	@mkdir -p build
-	build/accurate-kosinski/kosinski-compress $< $@
+out/sub_bios.kos: out/sub_bios.bin out/accurate-kosinski/kosinski-compress
+	@mkdir -p out
+	out/accurate-kosinski/kosinski-compress $< $@
 
-main/splash/tiles.bin main/splash/map.bin:
-	$(MAKE) -C main/splash
+src/splash/tiles.bin src/splash/map.bin:
+	$(MAKE) -C src/splash
 
-main/splash/tiles.nem: main/splash/tiles.bin build/clownnemesis/clownnemesis-tool
-	build/clownnemesis/clownnemesis-tool -c $< $@
+src/splash/tiles.nem: src/splash/tiles.bin out/clownnemesis/clownnemesis-tool
+	out/clownnemesis/clownnemesis-tool -c $< $@
 
-main/splash/map.eni: main/splash/map.bin tools/clownlzss/clownlzss
-	tools/clownlzss/clownlzss -e $< $@
+src/splash/map.eni: src/splash/map.bin bin/clownlzss/clownlzss
+	bin/clownlzss/clownlzss -e $< $@
 
-build/bios.bin: main/core.asm build/subbios.kos tools/clownassembler/clownassembler main/splash/tiles.nem main/splash/map.eni
-	@mkdir -p build
-	tools/clownassembler/clownassembler -i $< -o $@
+out/bios.bin: src/main/core.asm out/sub_bios.kos bin/clownassembler/clownassembler src/splash/tiles.nem src/splash/map.eni
+	@mkdir -p out
+	bin/clownassembler/clownassembler -i $< -o $@
